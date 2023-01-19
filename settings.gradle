@@ -1,0 +1,10 @@
+rootProject.name = 'gradle-starter'
+
+include 'database'
+include 'service'
+include 'web'
+include 'common'
+include 'common:core'
+include 'common:util'
+
+
