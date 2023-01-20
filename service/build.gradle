@@ -1,6 +1,12 @@
+import com.dmdev.plugin.CustomPlugin
+import com.dmdev.task.ReleaseTask
+
 plugins {
     id 'java-library'
+    id 'jacoco'
+    id 'custom-dmdev'
 }
+
 
 repositories {
     mavenCentral()
@@ -13,5 +19,27 @@ dependencies {
 }
 
 test {
+    maxParallelForks 3
     useJUnitPlatform()
 }
+
+test.finalizedBy jacocoTestReport
+jacocoTestReport.dependsOn test
+
+ext {
+    release = false
+}
+
+task makeRelease(type: ReleaseTask) {
+    release = project.release
+    releaseFile = new File("$rootDir/script.gradle")
+}
+
+//task makeRelease {
+//    inputs.property("release", project.release)
+//    outputs.file("$rootDir/script.gradle")
+//
+//    doLast {
+//        println "release in prigress..."
+//    }
+//}

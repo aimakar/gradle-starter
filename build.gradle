@@ -10,11 +10,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'java'
-    id 'war'
-}
-
 apply from: 'script.gradle'
 
 allprojects {
@@ -33,67 +28,6 @@ repositories {
     mavenCentral()
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
-}
-
-//configurations {
-//    Configuration configurationImpl = getByName("implementation")
-//    dmdev {
-//        description = "dmdev config"
-//    }
-//}
-
-dependencies {
-    compileOnly 'jakarta.servlet:jakarta.servlet-api:5.0.0'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
-    compileOnly 'org.springframework.boot:spring-boot-dependencies:3.0.1'
-
-    //add('implementation',[group: 'org.springframework', name: 'spring-mvc', version: '5.3.9'])
-    implementation 'org.springframework:spring-webmvc:5.3.9'
-}
-
-configurations.runtimeClasspath.files.each {println it}
-
-jar {
-    def jars = configurations.runtimeClasspath.files.collect {"lib/$it.name"}
-
-    manifest {
-        attributes 'Main-Class': 'com.dmdev.HelloWorld',
-                   'Class-Path': jars.join(' ')
-    }
-
-    //duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-
-    //from (configurations.runtimeClasspath.files.collect { zipTree(it)})
-}
-
-task copyAllDependencies(type: Copy) {
-    from(configurations.runtimeClasspath.files)
-    into("$buildDir/libs/lib")
-}
-
-jar.dependsOn copyAllDependencies
-
-class CustomPlugin implements Plugin<Project> {
-    @Override
-    void apply(Project project) {
-        def map = [description: "Hello task", group: "dmdev", type: DefaultTask]
-        project.task(map, "hello") {
-            println "configuration phase. Task hello"
-
-            doLast {
-                println "execution phase, Action 1"
-            }
-            doFirst {
-                println "execution phase, Action 2"
-            }
-            doLast {
-                println "execution phase, Action 3"
-            }
-            println "task: $description, group: $group, actions: ${actions.size()}"
-            println "path task: $path"
-        }
-    }
+wrapper {
+    gradleVersion "7.0.2"
 }
